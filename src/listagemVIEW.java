@@ -1,5 +1,6 @@
 
 import java.util.ArrayList;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /*
@@ -202,24 +203,30 @@ public class listagemVIEW extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
 
     private void listarProdutos(){
-        try {
-            ProdutosDAO produtosdao = new ProdutosDAO();
-            
-            DefaultTableModel model = (DefaultTableModel) listaProdutos.getModel();
-            model.setNumRows(0);
-            
-            ArrayList<ProdutosDTO> listagem = produtosdao.listarProdutos();
-            
-            for(int i = 0; i < listagem.size(); i++){
-                model.addRow(new Object[]{
-                    listagem.get(i).getId(),
-                    listagem.get(i).getNome(),
-                    listagem.get(i).getValor(),
-                    listagem.get(i).getStatus()
-                });
-            }
-        } catch (Exception e) {
+       try {
+        ProdutosDAO produtodao = new ProdutosDAO();
+        
+        // Pega o modelo da tabela que você desenhou na tela (ajuste o nome se a sua jTable for diferente)
+        // O padrão do NetBeans costuma ser listaProdutos ou jTable1
+        javax.swing.table.DefaultTableModel model = (javax.swing.table.DefaultTableModel) listaProdutos.getModel();
+        
+        // Limpa a tabela antes de preencher, para não duplicar linhas
+        model.setNumRows(0);
+        
+        // Puxa a lista de produtos atualizada do banco de dados
+        java.util.ArrayList<ProdutosDTO> listagem = produtodao.listarProdutos();
+        
+        // Percorre a lista inserindo linha por linha na tabela da tela
+        for (int num = 0; num < listagem.size(); num++) {
+            model.addRow(new Object[]{
+                listagem.get(num).getId(),
+                listagem.get(num).getNome(),
+                listagem.get(num).getValor(),
+                listagem.get(num).getStatus()
+            });
         }
-    
+    } catch (Exception erro) {
+        JOptionPane.showMessageDialog(null, "Erro ao listar produtos na tela: " + erro.getMessage());
     }
+}
 }

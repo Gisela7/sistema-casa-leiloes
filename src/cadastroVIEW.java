@@ -140,17 +140,40 @@ public class cadastroVIEW extends javax.swing.JFrame {
     }//GEN-LAST:event_cadastroNomeActionPerformed
 
     private void btnCadastrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCadastrarActionPerformed
+                                             
+        String nome = cadastroNome.getText().trim();
+        String valorStr = cadastroValor.getText().trim();
+    
+    if (nome.isEmpty() || valorStr.isEmpty()) {
+        javax.swing.JOptionPane.showMessageDialog(this, "Por favor, preencha todos os campos antes de salvar.");
+        return; 
+    }
+    
+    try {
         ProdutosDTO produto = new ProdutosDTO();
-        String nome = cadastroNome.getText();
-        String valor = cadastroValor.getText();
-        String status = "A Venda";
         produto.setNome(nome);
-        produto.setValor(Integer.parseInt(valor));
-        produto.setStatus(status);
+        produto.setValor(Integer.parseInt(valorStr));
+        produto.setStatus("A Venda");
         
+        // Execução do cadastro via DAO
         ProdutosDAO produtodao = new ProdutosDAO();
         produtodao.cadastrarProduto(produto);
         
+        // Feedback de sucesso
+        javax.swing.JOptionPane.showMessageDialog(this, "Produto cadastrado com sucesso!");
+        
+        // Limpeza dos campos após o sucesso
+        cadastroNome.setText("");
+        cadastroValor.setText("");
+        cadastroNome.requestFocus();
+        
+    } catch (NumberFormatException e) {
+        // Trata erro caso o usuário digite letras no campo valor
+        javax.swing.JOptionPane.showMessageDialog(this, "Erro: O campo 'Valor' deve conter apenas números inteiros.");
+    } catch (Exception e) {
+        // Feedback de falha
+        javax.swing.JOptionPane.showMessageDialog(this, "Erro ao realizar o cadastro: " + e.getMessage());
+    }
     }//GEN-LAST:event_btnCadastrarActionPerformed
 
     private void btnProdutosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProdutosActionPerformed
