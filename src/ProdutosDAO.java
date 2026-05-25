@@ -18,20 +18,17 @@ public class ProdutosDAO {
         String sql = "INSERT INTO produtos (nome, valor, status) VALUES (?, ?, ?)";
         
         try {
-            // Prepara a estrutura do SQL substituindo as "?" pelos dados reais
             prep = conn.prepareStatement(sql);
             prep.setString(1, produto.getNome());
             prep.setInt(2, produto.getValor());
             prep.setString(3, produto.getStatus());
             
-            // Executa fisicamente o comando no banco de dados MySQL
             prep.executeUpdate();
             
         } catch (SQLException erro) {
-            // Mostra uma mensagem na tela caso ocorra algum erro de banco de dados
             JOptionPane.showMessageDialog(null, "Erro ao cadastrar na DAO: " + erro.getMessage());
         } finally {
-            // Fecha as conexões para evitar travamento do banco
+            
             try {
                 if (prep != null) prep.close();
                 if (conn != null) conn.close();
@@ -41,8 +38,49 @@ public class ProdutosDAO {
         }
     }
     
+    public void venderProduto(int id) {
+        String sql = "UPDATE produtos SET status = 'Vendido' WHERE id = ?";
+        
+        try {
+            conn = new conectaDAO().connectDB();
+            prep = conn.prepareStatement(sql);
+            prep.setInt(1, id);
+            
+            prep.executeUpdate();          
+            
+            
+    } catch (Exception e) {        
+        System.out.println("Erro ao atualizar o status do produto: " + e.getMessage());
+    } finally{
+            
+    }
+}
+    
+    public ArrayList<ProdutosDTO> listarProdutosVendidos() {
+        ArrayList<ProdutosDTO> listagem = new ArrayList<>();
+        
+        String sql = "SELECT * FROM produtos WHERE status = 'Vendido'";
+        
+    try {
+        conn = new conectaDAO().connectDB();
+        prep = conn.prepareStatement(sql);
+        resultset = prep.executeQuery();
+        
+        while (resultset.next()) {
+            ProdutosDTO produto = new ProdutosDTO();
+            produto.setId(resultset.getInt("id"));
+            produto.setNome(resultset.getString("nome"));
+            produto.setValor(resultset.getInt("valor"));
+            produto.setStatus(resultset.getString("status"));
+            listagem.add(produto);
+        }
+    } catch (Exception e) {
+        System.out.println("Erro ao listar vendidos: " + e.getMessage());
+    }
+    return listagem;
+}
+    
     public ArrayList<ProdutosDTO> listarProdutos(){
-        // Limpa a lista para não duplicar dados caso o método seja chamado várias vezes
         listagem.clear(); 
         
         conn = new conectaDAO().connectDB();
@@ -52,17 +90,14 @@ public class ProdutosDAO {
             prep = conn.prepareStatement(sql);
             resultset = prep.executeQuery(); // Executa a busca (SELECT)
             
-            // Percorre linha por linha o resultado vindo do MySQL
             while (resultset.next()) {
                 ProdutosDTO produto = new ProdutosDTO();
                 
-                // Pega os dados das colunas do banco e joga no objeto Java
                 produto.setId(resultset.getInt("id")); 
                 produto.setNome(resultset.getString("nome"));
                 produto.setValor(resultset.getInt("valor"));
                 produto.setStatus(resultset.getString("status"));
                 
-                // Adiciona o produto na lista que será exibida na tabela
                 listagem.add(produto);
             }
             
@@ -76,8 +111,7 @@ public class ProdutosDAO {
             } catch (SQLException e) {
                 System.out.println("Erro ao fechar conexao: " + e.getMessage());
             }
-        }
-        
+        }        
         return listagem;
     }
 }
