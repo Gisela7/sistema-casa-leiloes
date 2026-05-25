@@ -1,4 +1,7 @@
 
+import java.awt.HeadlessException;
+
+
 public class cadastroVIEW extends javax.swing.JFrame {
 
     
@@ -137,7 +140,7 @@ public class cadastroVIEW extends javax.swing.JFrame {
     try {
         ProdutosDTO produto = new ProdutosDTO();
         produto.setNome(nome);
-        produto.setValor(Integer.parseInt(valorStr));
+        produto.setValor(Integer.valueOf(valorStr));
         produto.setStatus("A Venda");
         
         ProdutosDAO produtodao = new ProdutosDAO();
@@ -151,7 +154,7 @@ public class cadastroVIEW extends javax.swing.JFrame {
         
     } catch (NumberFormatException e) {
         javax.swing.JOptionPane.showMessageDialog(this, "Erro: O campo 'Valor' deve conter apenas números inteiros.");
-    } catch (Exception e) {
+    } catch (HeadlessException e) {
         javax.swing.JOptionPane.showMessageDialog(this, "Erro ao realizar o cadastro: " + e.getMessage());
     }
     }//GEN-LAST:event_btnCadastrarActionPerformed
@@ -161,6 +164,7 @@ public class cadastroVIEW extends javax.swing.JFrame {
         listagem.setVisible(true);
     }//GEN-LAST:event_btnProdutosActionPerformed
 
+    @SuppressWarnings("Convert2Lambda")
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -187,6 +191,7 @@ public class cadastroVIEW extends javax.swing.JFrame {
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
+            @Override
             public void run() {
                 new cadastroVIEW().setVisible(true);
             }
